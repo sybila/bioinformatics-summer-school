@@ -1,0 +1,9 @@
+pyscenic==0.12.1
+arboreto==0.1.6
+
+# Note: pySCENIC requires some older packages:
+setuptools==79.0.1
+numpy==1.23.5
+
+# Supporting packages
+notebook
