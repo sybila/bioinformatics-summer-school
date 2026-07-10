@@ -5,5 +5,13 @@ arboreto==0.1.6
 setuptools==79.0.1
 numpy==1.23.5
 
+# Required by arboreto (may also require Python 3.10)
+distributed==2024.2.1 
+dask==2024.2.1 
+dask-expr==0.5.3
+
+# Note: do not install anndata/scanpy in this environment.
+# No way to get it working with the old numpy version.
+
 # Supporting packages
 notebook
