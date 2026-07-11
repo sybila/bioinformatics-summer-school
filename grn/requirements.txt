@@ -9,3 +9,4 @@ dask-expr==0.5.3
 
 # Supporting packages
 notebook==7.6.0
+gseapy==1.3.0
