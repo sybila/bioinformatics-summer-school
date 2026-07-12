@@ -4,9 +4,9 @@ run_grn_inference.py
 
 This script performs parallelized Gene Regulatory Network (GRN) inference 
 using GRNBoost2 on a single-cell RNA-seq dataset (h5ad file). 
-It selects the top 5000 Highly Variable Genes (HVGs) as target genes,
-uses a list of known transcription factors as predictors, and parallelizes 
-the workload using a local Dask cluster.
+It selects Highly Variable Genes (HVGs) as target genes (or all genes if not specified),
+uses a list of known transcription factors as predictors (or all genes if not specified),
+and parallelizes the workload using a local Dask cluster.
 """
 
 import argparse
@@ -21,8 +21,10 @@ def main():
     parser = argparse.ArgumentParser(description="Infer GRN using GRNBoost2 on a local Dask cluster.")
     parser.add_argument("--input", type=str, default="preprocessed_adata.h5ad", 
                         help="Path to preprocessed scanpy .h5ad file.")
-    parser.add_argument("--tf_list", type=str, default="allTFs_mm.txt", 
-                        help="Path to the transcription factor list (TXT).")
+    parser.add_argument("--n_hvg", type=int, default=None,
+                        help="Number of highly variable genes to select. If not provided, all genes are used.")
+    parser.add_argument("--tf_list", type=str, default=None,
+                        help="Path to the transcription factor list (TXT). If not provided, all genes are used as TFs.")
     parser.add_argument("--output", type=str, default="full_grn_results.tsv", 
                         help="Path to save the output TSV file.")
     parser.add_argument("--cores", type=int, default=24, 
@@ -36,8 +38,8 @@ def main():
     if not os.path.exists(args.input):
         print(f"Error: Input file '{args.input}' not found.")
         sys.exit(1)
-        
-    if not os.path.exists(args.tf_list):
+    
+    if args.tf_list and not os.path.exists(args.tf_list):
         print(f"Error: TF list file '{args.tf_list}' not found.")
         sys.exit(1)
 
@@ -45,7 +47,7 @@ def main():
     adata = sc.read_h5ad(args.input)
     print(f"Loaded dataset with shape: {adata.shape}")
 
-    print("--- Step 2: Selecting Top 5000 Highly Variable Genes (HVGs) ---")
+    print("--- Step 2: Selecting Highly Variable Genes ---")
     # Normalize total counts per cell to a target sum (e.g., 10,000)
     sc.pp.normalize_total(adata, target_sum=1e4)
 
@@ -53,25 +55,29 @@ def main():
     sc.pp.log1p(adata)
 
     # Identify highly variable genes
-    sc.pp.highly_variable_genes(adata, n_top_genes=5000, flavor="seurat")
-    hvg_list = adata.var_names[adata.var.highly_variable].tolist()
-    print(f"Identified {len(hvg_list)} target HVGs.")
+    if args.n_hvg is not None:
+        sc.pp.highly_variable_genes(adata, n_top_genes=args.n_hvg, flavor="seurat")
+        hvg_list = adata.var_names[adata.var.highly_variable].tolist()
+        print(f"Identified {len(hvg_list)} target HVGs.")
+    else:
+        hvg_list = adata.var_names.tolist()
+        print(f"Using all {len(hvg_list)} genes as targets.")
 
-    print("--- Step 3: Loading and filtering Transcription Factors ---")
-    with open(args.tf_list, "r") as f:
-        tf_list = [line.strip() for line in f if line.strip()]
+    print("--- Step 3: Loading Transcription Factors ---")
+    if args.tf_list:
+        with open(args.tf_list, "r") as f:
+            tf_list = [line.strip() for line in f if line.strip()]
+    else:
+        tf_list = adata.var_names.tolist()
+        print(f"No TF list provided, using all {len(tf_list)} genes as candidate TFs.")
     
     # Keep only TFs that are actually present in our expression dataset
     available_tfs = list(set(tf_list).intersection(adata.var_names))
-    print(f"Found {len(available_tfs)} out of {len(tf_list)} candidate TFs in the dataset.")
-
-    if len(available_tfs) == 0:
-        print("Error: No transcription factors from your list were found in the dataset. Check gene symbols.")
-        sys.exit(1)
+    print(f"Found {len(available_tfs)} candidate TFs in the dataset.")
 
     print("--- Step 4: Creating optimized expression matrix subset ---")
     # We subset to the union of HVGs and available TFs.
-    # This prevents loading unused genes, saving massive RAM
+    # This prevents loading unused genes, saving RAM
     genes_to_keep = list(set(hvg_list).union(available_tfs))
     adata_subset = adata[:, genes_to_keep].copy()
     
@@ -97,7 +103,7 @@ def main():
     try:
         print("--- Step 6: Inferring Gene Regulatory Network ---")
         # Run GRNBoost2
-        # Target genes = hvg_list (5000 genes)
+        # Target genes = hvg_list
         # Candidate regulators = available_tfs
         network = grnboost2(
             expression_data=expression_df,
