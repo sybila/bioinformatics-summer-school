@@ -22,6 +22,10 @@ COPY 01-dataset-overview.ipynb .
 COPY 02-arboreto-grn.ipynb .
 COPY pseudotime.png .
 
+RUN mkdir -p data
+COPY ./data/full_grn_results.tsv ./data/full_grn_results.tsv
+COPY ./data/full_grn_results_5000.tsv ./data/full_grn_results_5000.tsv
+
 # Verify that the notebooks run
 RUN jupyter nbconvert --to notebook --execute --inplace --debug \
   --ExecutePreprocessor.timeout=600 \
