@@ -15,4 +15,5 @@ dask-expr==0.5.3
 
 # Supporting packages
 notebook
-gzip
+matplotlib
+seaborn
