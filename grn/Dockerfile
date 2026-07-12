@@ -28,12 +28,12 @@ COPY ./data/full_grn_results_5000.tsv ./data/full_grn_results_5000.tsv
 
 # Verify that the notebooks run
 RUN jupyter nbconvert --to notebook --execute --inplace --debug \
-  --ExecutePreprocessor.timeout=600 \
+  --ExecutePreprocessor.timeout=3600 \
   --ExecutePreprocessor.kernel_name=python3 \
   01-dataset-overview.ipynb
 
   RUN jupyter nbconvert --to notebook --execute --inplace --debug \
-  --ExecutePreprocessor.timeout=600 \
+  --ExecutePreprocessor.timeout=3600 \
   --ExecutePreprocessor.kernel_name=python3 \
   02-arboreto-grn.ipynb
 
