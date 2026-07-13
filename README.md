@@ -5,4 +5,4 @@ Hello and welcome! This repository will share important information about the bi
 ## Slides
 
  - Welcome slides: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/welcome_slides.pdf)
- - Lecture 1 - From Cells to Alignments: [docs] (https://www.canva.com/design/DAHOmAQeLe8/oNGDpZQaWp_ELJDoF5RGtg/edit)
+ - Lecture 1 - From Cells to Alignments: [docs](https://www.canva.com/design/DAHOmAQeLe8/oNGDpZQaWp_ELJDoF5RGtg/edit)
