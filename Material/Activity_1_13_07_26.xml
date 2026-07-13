@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Session genome="hg38" locus="chr7:50382719-50391979" version="8">
     <Resources>
-        <Resource path="/storage/plzen1/home/mariateresa91/totalRNA_GM12878_chr7.bam" type="bam"/>
-        <Resource path="/storage/plzen1/home/mariateresa91/mRNA_GM12878_chr7.bam" type="bam"/>
-        <Resource path="/storage/plzen1/home/mariateresa91/long_GM12878_chr7.bam" type="bam"/>
+        <Resource path="../Data/totalRNA_GM12878_chr7.bam" type="bam"/>
+        <Resource path="../Data/mRNA_GM12878_chr7.bam" type="bam"/>
+        <Resource path="../Data/long_GM12878_chr7.bam" type="bam"/>
     </Resources>
     <Panel height="884" name="Panel1783367336421" width="1506">
-        <Track attributeKey="long_GM12878_chr7.bam" clazz="org.broad.igv.sam.AlignmentTrack" color="185,185,185" displayMode="EXPANDED" experimentType="RNA" fontSize="10" id="/storage/plzen1/home/mariateresa91/long_GM12878_chr7.bam" name="long_GM12878_chr7.bam" visible="true">
+        <Track attributeKey="long_GM12878_chr7.bam" clazz="org.broad.igv.sam.AlignmentTrack" color="185,185,185" displayMode="EXPANDED" experimentType="RNA" fontSize="10" id="../Data/long_GM12878_chr7.bam" name="long_GM12878_chr7.bam" visible="true">
             <RenderOptions duplicatesOption="FILTER"/>
         </Track>
     </Panel>
     <Panel height="3222" name="Panel1783367346695" width="1506">
-        <Track attributeKey="mRNA_GM12878_chr7.bam" clazz="org.broad.igv.sam.AlignmentTrack" color="185,185,185" displayMode="EXPANDED" experimentType="RNA" fontSize="10" id="/storage/plzen1/home/mariateresa91/mRNA_GM12878_chr7.bam" name="total_RNA_GM12878_chr7.bam" visible="true">
+        <Track attributeKey="mRNA_GM12878_chr7.bam" clazz="org.broad.igv.sam.AlignmentTrack" color="185,185,185" displayMode="EXPANDED" experimentType="RNA" fontSize="10" id="../Data/mRNA_GM12878_chr7.bam" name="total_RNA_GM12878_chr7.bam" visible="true">
             <RenderOptions duplicatesOption="FILTER"/>
         </Track>
     </Panel>
     <Panel height="4636" name="Panel1783367358229" width="1506">
-        <Track attributeKey="totalRNA_GM12878_chr7.bam" clazz="org.broad.igv.sam.AlignmentTrack" color="185,185,185" displayMode="EXPANDED" experimentType="RNA" fontSize="10" id="/storage/plzen1/home/mariateresa91/totalRNA_GM12878_chr7.bam" name="mRNA_GM12878_chr7.bam" visible="true">
+        <Track attributeKey="totalRNA_GM12878_chr7.bam" clazz="org.broad.igv.sam.AlignmentTrack" color="185,185,185" displayMode="EXPANDED" experimentType="RNA" fontSize="10" id="../Data/totalRNA_GM12878_chr7.bam" name="mRNA_GM12878_chr7.bam" visible="true">
             <RenderOptions duplicatesOption="FILTER"/>
         </Track>
     </Panel>
