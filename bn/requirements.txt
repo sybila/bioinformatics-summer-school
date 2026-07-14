@@ -3,7 +3,5 @@ biodivine_aeon==1.4.2
 bonesis==0.7.0
 
 # Supporting packages
-networkx==3.6.1
-matplotlib==3.11.0
 notebook==7.6.0
 graphviz==0.21
