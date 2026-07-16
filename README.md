@@ -7,5 +7,5 @@ Hello and welcome! This repository will share important information about the bi
  - Welcome slides: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/welcome_slides.pdf)
  - Lecture 1 - From Cells to Alignments: [docs](https://www.canva.com/design/DAHOmAQeLe8/oNGDpZQaWp_ELJDoF5RGtg/edit)
  - Lecture 2 - Gene regulatory networks: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/grn_slides.pdf)
- - Lecture 3 - Boolean Networks: [docs](https://docs.google.com/presentation/d/1YhFuYZyG_JdfzQ-IB1TNk76vJO25K22bYnDoWVrFZkg/edit?usp=sharing)
- - Lecture 4 - Boolean Networks Inference: [docs](https://docs.google.com/presentation/d/1q6Un4xkG_agQyVRnTHWq9CeV534ReiC9s0Jak1TRoZg/edit?usp=sharing)
+ - Lecture 3 - Boolean Networks: [PDF](https://github.com/sybila/bioinformatics-summer-school/blob/main/bn/slides/DBLOK7_2026_BNs.pdf)
+ - Lecture 4 - Boolean Networks Inference: [PDF](https://github.com/sybila/bioinformatics-summer-school/blob/main/bn/slides/DBLOK7_BN_inference.pdf)
