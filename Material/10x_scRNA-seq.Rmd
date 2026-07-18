@@ -1,0 +1,146 @@
+# scRNA-seq and bulk RNA-seq exercise
+
+## Matej Lexa, @2026 Summer School
+
+In these exercises we will get familiar with data from [Herault et al. (2021)](https://www.ncbi.nlm.nih.gov/pubmed/33526011), inspect its scRNA-seq specific features and finally use the same data in a "virtual" bulk RNA-seq and differential expression analysis.
+
+## Day 1 (Tuesday, July 21)
+
+### Understanding the background
+
+Open the paper and identify <font color="green">*(20 min)*</font>:
+
+1. The main result of the study.
+2. What is HSPC?
+3. How were HSPCs obtained and what samples were collected?
+4. **What technology was used for scRNA library preparation?**
+5. How were the samples sequenced?
+6. How were genes counted?
+7. Which genes were found to have increased/decreased expression in the two timepoints?
+8. **Where can we find sequencing datasets from this study?**
+
+*I will give you a PDF of the paper with answers annotated and highlighted to serve as a key <font color="green">(5 min)</font>*
+
+Answer to point 8 should have eventually brought you to the following link:
+
+[GEO data for Herault et al. (2021)](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE147729)
+
+or
+
+[SRA (NCBI) data for Herault et al. (2021)](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA616273)
+
+Explore the experiment and the data. Finally, download sequencing data from "young B" and "old B" samples <font color="green">*(25 min)*</font>.
+
+This can be done manually via the web interface at NCBI/SRA, for example. For a more automated and reproducible approach, you could use the fastq-dump or fasterq-dump software from NCBI:
+
+```{bash, eval = FALSE}
+fastq-dump SRR11449101 #downloading a run with fastq-dump
+fasterq-dump SRR11449109 #downloading a run with fasterq-dump
+```
+
+*SHORT BREAK <font color="green">(5 min)</font>*
+
+At this point we know that 10x Genomics platform was used for library preparation, Illumina was used for sequencing, and CellRanger was used for alignment and counting. To better understand the procedure, let us consult some sources <font color="green">*(20 min)*</font>:
+
+#### YOUTUBE
+[Chromium sc overview](https://www.youtube.com/watch?v=4NAS1qTJmYA) 
+
+[10x Genomics and Illumina long video](https://www.youtube.com/watch?v=gtCT7SFpulM) 
+
+[Loading the chip](https://www.youtube.com/watch?v=bNZQt2jtczA) 
+[Loading the 10x](https://www.youtube.com/watch?v=rvyRsr55k3Q) 
+[GEM transfer and RT](https://www.youtube.com/watch?v=j64vN33RYsc) 
+[Break the GEMs](https://www.youtube.com/watch?v=BoG1l2EaZtU) 
+[cDNA amplification](https://www.youtube.com/watch?v=lxfWOwWF-kI) 
+
+#### 10x GENOMICS
+[10x library link](https://teichlab.github.io/scg_lib_structs/methods_html/10xChromium3.html)
+
+#### CELLRANGER
+[CellRanger link](https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-in)
+
+BTW, what does GEM stand for?
+
+### Working with the data
+
+#### Data inspection
+
+Inspect the data. What length are the reads? Can you identify any fixed sequences from library preparation? Where is the barcode and the UMI <font color="green">*(10 min)*</font>?
+
+```{bash, eval = FALSE}
+less SRR11449101.fastq
+```
+
+```{bash, eval = FALSE}
+grep -A1 '@SRR' SRR11449101.fastq | grep '^[ACGTN]' | wc
+```
+
+```{bash, eval = FALSE}
+grep -A1 '@SRR' data/SRR11449101.fastq | grep '^[ACGTN]' | head -100 | awk '{print(length($0))}' | sort | uniq -cebpage also cont
+```
+We are aiming for a "virtual" bulk RNA-seq analysis, so we will not use CellRanger alignment. Note that the paper data GEO webpage, however, also contains barcodes, genes and matrices produced by CellRanger and alignment counting.
+
+#### Alignment
+
+There are two RNA-seq aligners that are often used to align sequences to a reference while taking into account possible splicing - STAR and hisat2. Both require a reference to align to, STAR can also use annotations of the reference.
+
+##### Downloading reference genomes <font color="green">*(15 min)*</font>
+
+Download an appropriate reference genome. One possibility is what authors of the paper used:
+
+```{bash, eval = FALSE}
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/635/GCF_000001635.27_GRCm39/GCF_000001635.27_GRCm39_genomic.fna.gz
+```
+
+Can you find this address assuming you haven't be given the above URL <font color="green">*(5 min)*</font>?
+
+BREAK <font color="green">*(5 min)*</font>
+
+##### Generating indices and input files <font color="green">*(20 min)*</font>
+
+For STAR, you need to generate a special directory integrating the reference and the annotations (no need to run this, for time reasons we run only hisat2):
+
+```{bash, eval = FALSE}
+STAR --runThreadN 6 --limitGenomeGenerateRAM 12000000000 --runMode genomeGenerate --genomeDir /home/lexa/teaching/dblok7/refdata/star/ --genomeFastaFiles /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.fna --sjdbGTFfile /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.gtf --sjdbOverhang 50
+```
+
+For hisat2, you need to build an index of the reference genome:
+
+```{bash, eval = FALSE}
+hisat2-build /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.fna GRCm39
+```
+
+##### Doing the alignment (with hisat2) <font color="green">*(20 min)*</font>
+
+We will align the Illumina reads to a reference. Remember that the reads are relatively short and contain bases that cannot be aligned. We will skip them with the -5 option of the command. Can you justify the number used (34)? What about the other options used?
+
+```{bash, eval = FALSE}
+hisat2 GRCm39 -p 6 -U ../data/SRR11449101.fastq -5 34 -S SRR11449101.sam
+```
+
+Was the alignment successful? As a simple criterion, we are just looking for a reasonable percentage (>30%) of the reads to get aligned.
+
+##### Counting features <font color="green">*(20 min)*</font>
+
+Now that the reads have been aligned, we would like to know, what annotated features (e.g. genes) they overlap with, as well as the precise counts of these overlaps for each feature.
+
+First, we create an indexed BAM file from the SAM file, to speed up the counting process:
+
+```{bash, eval = FALSE}
+samtools view -@ 6 -bS SRR11449101.sam | samtools sort -@ 6 -o SRR11449101_sorted.bam
+samtools index SRR11449101_sorted.bam
+```
+
+Then we do the counting:
+
+```{bash, eval = FALSE}
+featureCounts -T 6 -a /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.gtf -o read_counts_101.txt SRR11449101_sorted.bam
+```
+
+Examine the table. Can you identify the top 10 highly expressed genes <font color="green">*(10 min)*</font>?
+
+```{bash, eval = FALSE}
+cat hisat2/read_counts_101.txt | cut -f 1,7 | sort -rn -k 2 | head -10
+```
+
+
