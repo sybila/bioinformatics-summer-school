@@ -9,3 +9,5 @@ Hello and welcome! This repository will share important information about the bi
  - Lecture 2 - Gene regulatory networks: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/grn_slides.pdf)
  - Lecture 3 - Boolean Networks: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/bn/slides/DBLOK7_2026_BNs.pdf)
  - Lecture 4 - Boolean Networks Inference: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/bn/slides/DBLOK7_BN_inference.pdf)
+ - Lecture 5 - Boolean networks Inference II: [pdf](https://github.com/sybila/bioinformatics-summer-school/blob/main/data_modeling_slides.pdf)
+ 
