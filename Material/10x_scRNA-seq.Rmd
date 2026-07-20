@@ -29,14 +29,30 @@ or
 
 [SRA (NCBI) data for Herault et al. (2021)](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA616273)
 
-Explore the experiment and the data. Finally, download sequencing data from "young B" and "old B" samples <font color="green">*(25 min)*</font>.
+Explore the experiment and the data. Finally, download sequencing data from "young B" and "old B" samples (3 runs each) <font color="green">*(25 min)*</font>.
 
 This can be done manually via the web interface at NCBI/SRA, for example. For a more automated and reproducible approach, you could use the fastq-dump or fasterq-dump software from NCBI:
 
 ```{bash, eval = FALSE}
 fastq-dump SRR11449101 #downloading a run with fastq-dump
-fasterq-dump SRR11449109 #downloading a run with fasterq-dump
+fasterq-dump SRR11449101 #downloading a run with fasterq-dump
 ```
+
+Do this for all six runs, or split the work among your peers. It is possible that for time reasons, we will download these files from a local computer to achieve higher speeds:
+
+
+```{bash, eval = FALSE}
+scp studentx99@biolinux:/mnt/data/genome/mouse/SRR11449101.fastq #downloading a run with scp from a local computer (ask teacher for password)
+```
+
+If you haven't figured it out yourselves already, the following runs need to be analyzed:
+
+- SRR11449101
+- SRR11449102
+- SRR11449103
+- SRR11449109
+- SRR11449110
+- SRR11449111
 
 *SHORT BREAK <font color="green">(5 min)</font>*
 
@@ -76,7 +92,7 @@ grep -A1 '@SRR' SRR11449101.fastq | grep '^[ACGTN]' | wc
 ```
 
 ```{bash, eval = FALSE}
-grep -A1 '@SRR' data/SRR11449101.fastq | grep '^[ACGTN]' | head -100 | awk '{print(length($0))}' | sort | uniq -cebpage also cont
+grep -A1 '@SRR' data/SRR11449101.fastq | grep '^[ACGTN]' | head -100 | awk '{print(length($0))}' | sort | uniq -c
 ```
 We are aiming for a "virtual" bulk RNA-seq analysis, so we will not use CellRanger alignment. Note that the paper data GEO webpage, however, also contains barcodes, genes and matrices produced by CellRanger and alignment counting.
 
@@ -98,7 +114,7 @@ BREAK <font color="green">*(5 min)*</font>
 
 ##### Generating indices and input files <font color="green">*(20 min)*</font>
 
-For STAR, you need to generate a special directory integrating the reference and the annotations (no need to run this, for time reasons we run only hisat2):
+~~For STAR, you need to generate a special directory integrating the reference and the annotations~~  (no need to run this, for time reasons we run only hisat2):
 
 ```{bash, eval = FALSE}
 STAR --runThreadN 6 --limitGenomeGenerateRAM 12000000000 --runMode genomeGenerate --genomeDir /home/lexa/teaching/dblok7/refdata/star/ --genomeFastaFiles /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.fna --sjdbGTFfile /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.gtf --sjdbOverhang 50

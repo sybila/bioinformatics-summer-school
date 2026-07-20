@@ -391,13 +391,27 @@ data for Herault et al. (2021)</a></p>
 <p><a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA616273">SRA
 (NCBI) data for Herault et al. (2021)</a></p>
 <p>Explore the experiment and the data. Finally, download sequencing
-data from “young B” and “old B” samples <font color="green"><em>(25
-min)</em></font>.</p>
+data from “young B” and “old B” samples (3 runs each)
+<font color="green"><em>(25 min)</em></font>.</p>
 <p>This can be done manually via the web interface at NCBI/SRA, for
 example. For a more automated and reproducible approach, you could use
 the fastq-dump or fasterq-dump software from NCBI:</p>
 <pre class="bash"><code>fastq-dump SRR11449101 #downloading a run with fastq-dump
-fasterq-dump SRR11449109 #downloading a run with fasterq-dump</code></pre>
+fasterq-dump SRR11449101 #downloading a run with fasterq-dump</code></pre>
+<p>Do this for all six runs, or split the work among your peers. It is
+possible that for time reasons, we will download these files from a
+local computer to achieve higher speeds:</p>
+<pre class="bash"><code>scp studentx99@biolinux:/mnt/data/genome/mouse/SRR11449101.fastq #downloading a run with scp from a local computer (ask teacher for password)</code></pre>
+<p>If you haven’t figured it out yourselves already, the following runs
+need to be analyzed:</p>
+<ul>
+<li>SRR11449101</li>
+<li>SRR11449102</li>
+<li>SRR11449103</li>
+<li>SRR11449109</li>
+<li>SRR11449110</li>
+<li>SRR11449111</li>
+</ul>
 <p><em>SHORT BREAK <font color="green">(5 min)</font></em></p>
 <p>At this point we know that 10x Genomics platform was used for library
 preparation, Illumina was used for sequencing, and CellRanger was used
@@ -436,7 +450,7 @@ fixed sequences from library preparation? Where is the barcode and the
 UMI <font color="green"><em>(10 min)</em></font>?</p>
 <pre class="bash"><code>less SRR11449101.fastq</code></pre>
 <pre class="bash"><code>grep -A1 &#39;@SRR&#39; SRR11449101.fastq | grep &#39;^[ACGTN]&#39; | wc</code></pre>
-<pre class="bash"><code>grep -A1 &#39;@SRR&#39; data/SRR11449101.fastq | grep &#39;^[ACGTN]&#39; | head -100 | awk &#39;{print(length($0))}&#39; | sort | uniq -cebpage also cont</code></pre>
+<pre class="bash"><code>grep -A1 &#39;@SRR&#39; data/SRR11449101.fastq | grep &#39;^[ACGTN]&#39; | head -100 | awk &#39;{print(length($0))}&#39; | sort | uniq -c</code></pre>
 <p>We are aiming for a “virtual” bulk RNA-seq analysis, so we will not
 use CellRanger alignment. Note that the paper data GEO webpage, however,
 also contains barcodes, genes and matrices produced by CellRanger and
@@ -461,9 +475,9 @@ authors of the paper used:</p>
 <div id="generating-indices-and-input-files-20-min" class="section level5">
 <h5>Generating indices and input files <font color="green"><em>(20
 min)</em></font></h5>
-<p>For STAR, you need to generate a special directory integrating the
-reference and the annotations (no need to run this, for time reasons we
-run only hisat2):</p>
+<p><del>For STAR, you need to generate a special directory integrating
+the reference and the annotations</del> (no need to run this, for time
+reasons we run only hisat2):</p>
 <pre class="bash"><code>STAR --runThreadN 6 --limitGenomeGenerateRAM 12000000000 --runMode genomeGenerate --genomeDir /home/lexa/teaching/dblok7/refdata/star/ --genomeFastaFiles /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.fna --sjdbGTFfile /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.gtf --sjdbOverhang 50</code></pre>
 <p>For hisat2, you need to build an index of the reference genome:</p>
 <pre class="bash"><code>hisat2-build /home/lexa/teaching/dblok7/refdata/fasta/GRCm39_genomic.fna GRCm39</code></pre>
